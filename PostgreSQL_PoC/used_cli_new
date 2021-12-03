@@ -1,0 +1,121 @@
+# Create a Song
+def create_song(curr_user):
+    song_id = db.interact('SELECT COUNT(*) from song;') + 1
+    song_title = input('Song title: ')
+    length = input('Length: ')
+    explicit = bool(input('Explicit (1 for True/0 for False): '))
+    file_location = input('File location: ')
+    db.interact(f'INSERT INTO song VALUES ({song_id}, \'{song_title}\', {length}, {explicit}, \'{file_location}\', \'{curr_user}\');')
+
+
+# View Playlists, choose a Playlist to view
+def view_playlists(curr_user):
+    output = db.interact(f'SELECT title FROM userplaylist WHERE creator = \'{curr_user}\';')
+    print_tuples(output)
+
+# View Followers
+def view_followers(curr_user):
+    output = db.interact(f'SELECT follower FROM follows WHERE following = \'{curr_user}\';')
+    print_tuples(output)
+
+# Create an Album
+def create_album(curr_user):
+    # Note: Uses naive album_id method for project testing
+    album_id = db.interact('SELECT COUNT(*) FROM userplaylist;') + 100
+    title = input('Title: ')
+    record_label = input('Record label: ')
+    type = input('')
+    db.interact(f'INSERT INTO album VALUES ({album_id}, \'{title}\', 0, 0, \'{record_label}\', {type}, \'{curr_user}\');')
+
+# Add Song to an Album
+def add_song_album():
+    into_id = input('Insert into album with ID: ')
+    insert_id = input('Insert song with ID: ')
+    db.interact(f'INSERT INTO albumsongs VALUES ({into_id}, {insert_id});')
+    song_length = db.interact(f'SELECT length FROM song WHERE songid = {insert_id};')
+    playlist_length = db.interact(f'SELECT length FROM album WHERE albumid = {into_id};')
+    # Update playlist values (length, numsongs)
+    db.interact(f'UPDATE album SET length = {song_length + playlist_length} WHERE albumid = {into_id};')
+    db.interact(f'UPDATE album SET numsongs = numsongs + 1 WHERE albumid = {into_id};')
+
+
+####################
+# SEARCH FUNCTIONS #
+####################
+
+
+# search: all songs matching name
+def find_song_by_name(name_string):
+    # SELECT {attr} FROM song WHERE title LIKE '%k%';
+    matches = db.interact(f'SELECT title, createdby FROM song WHERE title LIKE \'%{name_string}%\';')
+    print_tuples(matches)
+
+# search: all artists matching name
+def find_artist_by_artist_name(artist_name):
+    matches = db.interact(f'SELECT displayname FROM artist WHERE displayname LIKE \'%{artist_name}%\';')
+    print_tuples(matches)
+
+# search: all albums matching name
+def find_album_by_name(album_name):
+    matches = db.interact(f'SELECT title FROM album WHERE title LIKE \'%{album_name}%\';')
+    print_tuples(matches)
+
+# search: all playlists matching name 
+def find_playlist_by_name(playlist_name):
+    matches = db.interact(f'SELECT title FROM playlist WHERE title LIKE \'%{playlist_name}%\';')
+    print_tuples(matches)
+    
+# search: all users matching name
+def find_user_by_name(username):
+    matches = db.interact(f'SELECT username FROM users WHERE username LIKE \'%{username}%\';')
+    print_tuples(matches)
+
+
+# Get all playlists from a user
+def get_playlists_by_user(username):
+
+    print('title, length, numsongs, creator')
+    #SELECT title, length, numsongs, creator from userplaylist JOIN users ON creator=username WHERE creator = 'HaroldMusic';
+    matches = db.interact(f'SELECT title, length, numsongs, creator from userplaylist JOIN users ON creator=username WHERE creator = \'{username}\'')
+    print_tuples(matches)
+
+# Get all songs from a playlist
+def get_songs_from_playlstid(playlistid):
+
+    matches = db.interact(f'SELECT title FROM song NATURAL JOIN userplaylistsongs WHERE playlistid = \'{playlistid}\'')
+    print_tuples(matches)
+
+
+# Get all albums by an artist
+def get_albums_by_artist(artist_display_name):
+    #SELECT displayname, title FROM album JOIN artist ON creator=username WHERE displayname = 'Blank Banshee';
+    matches = db.interact(f"SELECT displayname, title FROM album JOIN artist ON creator=username WHERE displayname = '{artist_display_name}';")
+    print_tuples(matches)
+
+# get all songs by an artist
+def get_song_by_artist(artist_display_name):
+    #SELECT displayname, title FROM song JOIN artist ON creator=username WHERE displayname = '{artist_display_name}';
+    matches = db.interact(f"SELECT displayname, title FROM song JOIN artist ON createdby=username WHERE displayname = '{artist_display_name}';")
+    print_tuples(matches)
+
+    
+
+
+
+
+
+##########################
+# SEARCH & MAP FUNCTIONS #
+##########################
+
+
+
+# Get all followers/following of an account
+def get_user_followers(username):
+    matches = db.interact(f"SELECT follower from follows WHERE following = '{username}';")
+    print_tuples(matches)
+
+# Get total followers for a given account
+def get_follower_count(username):
+    matches = db.interact(f"SELECT COUNT(*) FROM (SELECT * from follows WHERE following = '{username}') AS followlist;")
+    print("Total followers: ", matches[0][0])
