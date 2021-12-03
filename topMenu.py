@@ -45,7 +45,6 @@ playlists = db.interact(f'SELECT playlistid, title FROM userplaylist WHERE creat
 user = User(*resp, kind, follower, following, playlists)
 
 # Create the menu
-# menu = cm.ConsoleMenu("Music Manager", f"Welcome {user.name}")
 menu = cm.ConsoleMenu("Music Manager", "Welcome")
 
 # Create submenus for each level of the tree

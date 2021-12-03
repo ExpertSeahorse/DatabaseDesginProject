@@ -12,9 +12,11 @@ def interact(statement):
     # Execute provided statement
     cur.execute(statement)
 
-    output = cur.fetchall()
+    try:
+        output = cur.fetchall()
+    except psycopg2.ProgrammingError:
+        output = []
 
     conn.commit()
     cur.close()
-
     return output

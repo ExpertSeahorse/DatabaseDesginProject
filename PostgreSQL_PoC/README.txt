@@ -1,0 +1,1 @@
+This folder contains the PSQL dump as bkup.tar and SchemaAndData which includes data and loading instructions for recreating our db on another machine running PostGRES

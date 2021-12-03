@@ -1,5 +1,6 @@
 """
 From the consolemenu docs page
+Only for reference, not used in the actual application
 """
 
 # Import the necessary packages
