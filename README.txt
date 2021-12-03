@@ -9,8 +9,9 @@ mp3 files for all the songs in the db seed are not included.
 
 
 Requirements:
+	- python 3[.9.9]
 	- PostgreSQL db running on the local machine
 		- the credentials for accessing this database should be filled in the db.py file
 	- All python packages in requirements.txt installed
 
-The menu is run by running "python[3] .\topMenu.py" with the optional 'd' command line arguement to auto sign in a HaroldMusic
+The menu is run by running "python[3] .\topMenu.py" with the optional 'd' command line arguement to auto sign in as HaroldMusic, a Premium user
